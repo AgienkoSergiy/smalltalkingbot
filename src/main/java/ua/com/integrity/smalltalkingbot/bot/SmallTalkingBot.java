@@ -18,15 +18,15 @@ public class SmallTalkingBot extends TelegramLongPollingBot {
     private Boolean orderInProcess = false;
 
     public void onUpdateReceived(Update update) {
-        String outputMessage;
         long chatId = update.getMessage().getChatId();
+
 
         if (update.hasMessage() && update.getMessage().hasText()) {
             String messageText = update.getMessage().getText();
             if (orderInProcess){
                 //TODO finish it!
                 Order order = new Order();
-                sendTextMessage(order.callLiqPayApi(messageText), chatId);
+                sendTextMessage(order.callLiqPayApi(messageText/*, update.getCallbackQuery().getFrom().getId()*/), chatId);
                 orderInProcess = false;
 
             } else if (messageText.equals("/start")) {
@@ -39,7 +39,6 @@ public class SmallTalkingBot extends TelegramLongPollingBot {
                 Integer productId = Integer.valueOf(messageText.substring(3));
                 Product product = ProductRepository.getInstance().getProduct(productId);
 
-
                 if(product ==null){
                     sendTextMessage("Продукт з таким id не знайдено :(\n" +
                             "Спробуйте вибрати щось інше:\n", chatId);
@@ -50,30 +49,25 @@ public class SmallTalkingBot extends TelegramLongPollingBot {
                 sendTextMessage("\nНазад до меню (/menu)",chatId);
 
             }else if (messageText.equals("/menu")) {
-                sendTextMessage( "Сьогоднішнє меню:\n" + MessageBuilder.buildMenuMessage(), chatId);
+                sendTextMessage( "Сьогодні в меню:\n" + MessageBuilder.buildMenuMessage(), chatId);
             }else if(messageText.equals("/confirm")){
                 orderInProcess = true;
                 sendTextMessage("Введіть свій номер телефону в форматі +380ХХХХХХХХХ:",chatId);
+                /*^\+380\d{9}$*/
             }else{
                sendTextMessage("Не треба сумувати, в холодильничку для Вас є щось смачненьке:\n" +
                         MessageBuilder.buildMenuMessage(),chatId);
             }
 
-        }else if (update.hasMessage() && update.getMessage().hasPhoto()) {
+        }/*else if (update.hasMessage() && update.getMessage().hasPhoto()) {
 
             List<PhotoSize> photos = update.getMessage().getPhoto();
-            String photoId = photos.stream()
-                    .sorted(Comparator.comparing(PhotoSize::getFileSize).reversed())
-                    .findFirst()
+            String photoId = photos.stream().max(Comparator.comparing(PhotoSize::getFileSize))
                     .orElse(null).getFileId();
-            int photoWidth = photos.stream()
-                    .sorted(Comparator.comparing(PhotoSize::getFileSize).reversed())
-                    .findFirst()
+            int photoWidth = photos.stream().max(Comparator.comparing(PhotoSize::getFileSize))
                     .orElse(null).getWidth();
             // Know photo height
-            int photoHeight = photos.stream()
-                    .sorted(Comparator.comparing(PhotoSize::getFileSize).reversed())
-                    .findFirst()
+            int photoHeight = photos.stream().max(Comparator.comparing(PhotoSize::getFileSize))
                     .orElse(null).getHeight();
             // Set photo caption
             String caption = "file_id: " + photoId + "\nwidth: " + Integer.toString(photoWidth) + "\nheight: " + Integer.toString(photoHeight);
@@ -82,11 +76,11 @@ public class SmallTalkingBot extends TelegramLongPollingBot {
                     .setPhoto(photoId)
                     .setCaption(caption);
             try {
-                sendPhoto(msg); // Call method to send the photo with caption
+                sendPhoto(msg);
             } catch (TelegramApiException e) {
                 e.printStackTrace();
             }
-        }else{
+        }*/else{
             sendTextMessage("Не треба сумувати, в холодильничку для Вас є щось смачненьке:\n" +
                     MessageBuilder.buildMenuMessage(), chatId);
         }

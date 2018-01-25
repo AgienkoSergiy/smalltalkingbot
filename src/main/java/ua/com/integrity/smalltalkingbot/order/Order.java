@@ -13,20 +13,13 @@ public class Order {
     private String companyPublicId;
     private String companyPrivateKey;
 
-    public static String callLiqPayApiTest(){
-        HashMap<String, String> params = new HashMap<String, String>();
-        params.put("version", "3");
-        params.put("action", "invoice_bot");
-        params.put("amount", "1");
-        params.put("currency", "UAH");
-        params.put("order_id", UUID.randomUUID().toString());
-        params.put("channel_type", "telegram");
-        params.put("phone", "+380937681250");
-        params.put("sandbox", "1");
+
+    //TODO remove one of them
+    public String callLiqPayApi(String phoneNumber, Integer userId){
 
         LiqPay liqpay = new LiqPay( "i52327802934", "UcuUoBuTYbLvbXUkXm7JFcPfzvRIF2u6pjaJ4G1I");
         try {
-            HashMap<String, Object> res = (HashMap<String, Object>)liqpay.api("request", params);
+            HashMap<String, Object> res = (HashMap<String, Object>)liqpay.api("request", getOrderParams(phoneNumber, userId));
             for (String key :
                     res.keySet()) {
                 System.out.println(key + ": " + res.get(key));
@@ -39,7 +32,7 @@ public class Order {
         return "Сталася прикра помилка :(";
     }
 
-    public String callLiqPayApi(String phoneNumber){
+    public String callLiqPayApi(String phoneNumber/*, Integer userId*/){
 
         LiqPay liqpay = new LiqPay( "i52327802934", "UcuUoBuTYbLvbXUkXm7JFcPfzvRIF2u6pjaJ4G1I");
         try {
@@ -56,15 +49,33 @@ public class Order {
         return "Сталася прикра помилка :(";
     }
 
+    private HashMap<String, String> getOrderParams(String phoneNumber, Integer userId){
+        HashMap<String, String> params = new HashMap<String, String>();
+        params.put("currency", "UAH");
+        params.put("amount", "1");
+        params.put("description", "За їжу");
+        params.put("account", userId.toString());
+        params.put("channel_type", "telegram");
+        params.put("version", "3");
+        params.put("phone", phoneNumber);
+        params.put("order_id", UUID.randomUUID().toString());
+        params.put("action", "invoice_bot");
+        params.put("sandbox", "1");
+
+        return params;
+    }
+
     private HashMap<String, String> getOrderParams(String phoneNumber){
         HashMap<String, String> params = new HashMap<String, String>();
-        params.put("version", "3");
-        params.put("action", "invoice_bot");
-        params.put("amount", "1");
         params.put("currency", "UAH");
-        params.put("order_id", UUID.randomUUID().toString());
+        params.put("amount", "1");
+        params.put("description", "За їжу");
+        //params.put("account", userId.toString());
         params.put("channel_type", "telegram");
+        params.put("version", "3");
         params.put("phone", phoneNumber);
+        params.put("order_id", UUID.randomUUID().toString());
+        params.put("action", "invoice_bot");
         params.put("sandbox", "1");
 
         return params;
