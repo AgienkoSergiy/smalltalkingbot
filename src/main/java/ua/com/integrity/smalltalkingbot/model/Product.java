@@ -1,7 +1,5 @@
 package ua.com.integrity.smalltalkingbot.model;
 
-import java.math.BigDecimal;
-
 public class Product {
 
     private Integer id;
@@ -13,8 +11,10 @@ public class Product {
     private Double fat;
     private Double carbohydrate;
     private Double caloricity;
+    private Integer weight;
+    private String picId;
 
-    public Product(Integer id, String name, Double price, String category, String description, Double protein, Double fat, Double carbohydrate, Double caloricity) {
+    public Product(Integer id, String name, Double price, String category, String description, Double protein, Double fat, Double carbohydrate, Double caloricity, Integer weight, String picId) {
         this.id = id;
         this.name = name;
         this.price = price;
@@ -24,6 +24,8 @@ public class Product {
         this.fat = fat;
         this.carbohydrate = carbohydrate;
         this.caloricity = caloricity;
+        this.weight = weight;
+        this.picId = picId;
     }
 
     public Integer getId() {
@@ -98,15 +100,31 @@ public class Product {
         this.caloricity = caloricity;
     }
 
+    public Integer getWeight() {
+        return weight;
+    }
+
+    public void setWeight(Integer weight) {
+        this.weight = weight;
+    }
+
+    public String getPicId() {
+        return picId;
+    }
+
+    public void setPicId(String picId) {
+        this.picId = picId;
+    }
 
     public String getFullDescription() {
         return "Вибраний товар:\n" + name + "\n" +
-                "Ціна: " + price + " грн\n" +
+                "Ціна: " + price.intValue() + " грн\n" +
                 "Категорія: " + category + "\n" +
-                "Опис: " +description + "\n\n" +
-                "Білки: " + protein + "\n" +
-                "Жири: " + fat + "\n" +
-                "Вуглеводи: " + carbohydrate + "\n" +
-                "Калорійність: " + caloricity;
+                "Опис: " + description + "\n\n" +
+                "Білки: " + protein + " г\n" +
+                "Жири: " + fat + " г\n" +
+                "Вуглеводи: " + carbohydrate + " г\n" +
+                "Калорійність блюда: " + caloricity + " ккал\n" +
+                "Вага: " + weight + " г";
     }
 }
