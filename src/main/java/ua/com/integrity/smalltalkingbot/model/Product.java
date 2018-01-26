@@ -117,8 +117,7 @@ public class Product {
     }
 
     public String getFullDescription() {
-        return "Вибраний товар:\n" + name + "\n" +
-                "Ціна: " + price.intValue() + " грн\n" +
+        return  "Ціна: " + price.intValue() + " грн\n" +
                 "Категорія: " + category + "\n" +
                 "Опис: " + description + "\n\n" +
                 "Білки: " + protein + " г\n" +

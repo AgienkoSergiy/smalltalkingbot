@@ -1,7 +1,6 @@
 package ua.com.integrity.smalltalkingbot.repository;
 
 import ua.com.integrity.smalltalkingbot.model.Product;
-
 import java.util.HashMap;
 
 public class ProductRepository {
@@ -9,7 +8,7 @@ public class ProductRepository {
     private HashMap<Integer,Product> products;
 
     private ProductRepository(){
-        products = new HashMap<Integer,Product>();
+        products = new HashMap<>();
         initProducts();
     }
 
@@ -45,13 +44,8 @@ public class ProductRepository {
     }
 
 
-    //TODO make it right
     public Product getProduct(Integer productId){
-        Product product = products.get(productId);
-        if (product == null){
-            return null;
-        }
-        return product;
+        return products.get(productId);
     }
 
 }
