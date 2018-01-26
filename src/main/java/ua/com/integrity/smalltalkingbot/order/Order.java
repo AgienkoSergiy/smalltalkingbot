@@ -15,7 +15,7 @@ public class Order {
 
 
     //TODO remove one of them
-    /*
+
     public String callLiqPayApi(String phoneNumber, Integer userId){
 
         LiqPay liqpay = new LiqPay( "i52327802934", "UcuUoBuTYbLvbXUkXm7JFcPfzvRIF2u6pjaJ4G1I");
@@ -36,7 +36,7 @@ public class Order {
             e.printStackTrace();
         }
         return "Сталася прикра помилка :(";
-    }*/
+    }
 
     public String callLiqPayApi(String phoneNumber/*, Integer userId*/){
 
@@ -61,12 +61,12 @@ public class Order {
         }
         return "Сталася прикра помилка :(";
     }
-/*
-    private HashMap<String, String> getOrderParams(String phoneNumber, Integer userId){
-        HashMap<String, String> params = new HashMap<String, String>();
+
+    private HashMap<String, String> getOrderParams(String phoneNumber, Integer userId) {
+        HashMap<String, String> params = new HashMap<>();
         params.put("currency", "UAH");
         params.put("amount", "1");
-        params.put("description", CommonUtils.getUTF8String("За їжу"));
+        params.put("description", "Small Talking food test");
         params.put("account", userId.toString());
         params.put("channel_type", "telegram");
         params.put("version", "3");
@@ -76,7 +76,7 @@ public class Order {
         params.put("sandbox", "1");
 
         return params;
-    }*/
+    }
 
     private HashMap<String, String> getOrderParams(String phoneNumber){
         HashMap<String, String> params = new HashMap<String, String>();

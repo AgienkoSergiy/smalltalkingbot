@@ -20,8 +20,8 @@ public class MessageBuilder {
         for (Product product:
                 ProductRepository.getInstance().getProducts().values()) {
             textMessage = textMessage.append(product.getName())
-                    .append("(натисни тут ->/").append(product.getId()).append(") - ")
-                    .append(product.getPrice().intValue()).append(" грн\n");
+                    .append("(натисни тут -> /").append(product.getId()).append(") - ")
+                    .append(product.getPrice().intValue()).append(" грн\n\n");
         }
 
         return textMessage.toString();

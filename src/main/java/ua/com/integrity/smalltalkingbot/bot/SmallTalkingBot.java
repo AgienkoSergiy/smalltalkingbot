@@ -153,6 +153,12 @@ public class SmallTalkingBot extends TelegramLongPollingBot {
         orderInProcess = false;
     }
 
+    private void processOder(String phoneNumber, Integer userId, long chatId){
+        Order order = new Order();
+        ReplyKeyboardMarkup replyKeyboardMarkup = MessageBuilder.showButtonText("\uD83C\uDF72 Меню");
+        sendTextMessage(order.callLiqPayApi(phoneNumber, userId), chatId, replyKeyboardMarkup);
+        orderInProcess = false;
+    }
 
 
 
