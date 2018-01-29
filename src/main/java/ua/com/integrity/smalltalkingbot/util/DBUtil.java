@@ -40,7 +40,6 @@ public class DBUtil {
                      getClass().getClassLoader().getResourceAsStream(PROPERTY_FILE_PATH)) {
             Properties properties = new Properties();
             properties.load(inputStream);
-            System.out.println(properties.getProperty("db.driver"));
             dataSource = new BasicDataSource();
             dataSource.setDriverClassName(properties.getProperty("db.driver"));
             dataSource.setUrl(properties.getProperty("db.url"));
@@ -52,7 +51,6 @@ public class DBUtil {
     }
 
     public static Connection getConnection() throws SQLException {
-        System.out.println(dataSource);
         Connection conn = dataSource.getConnection();
         conn.setAutoCommit(false);
         return conn;

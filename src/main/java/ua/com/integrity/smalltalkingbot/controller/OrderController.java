@@ -86,11 +86,7 @@ public class OrderController {
         LiqPay liqpay = new LiqPay( PUBLIC_KEY, PRIVATE_KEY);
         try {
             HashMap<String, Object> res = (HashMap<String, Object>)liqpay.api("request", getNewOrderParams(order, phoneNumber));
-            //TODO remove this foreach after test
-            for (String key :
-                    res.keySet()) {
-                System.out.println(key + ": " + res.get(key));
-            }
+
             if ("ok".equals(res.get("result").toString())){
                 return "Платіж відправлено, замовлення можна оплатити за посиланням:\n" +
                         res.get("href").toString() + "\n" +
@@ -116,9 +112,8 @@ public class OrderController {
         params.put("phone", phoneNumber);
         params.put("order_id", order.getId());
         params.put("action", "invoice_bot");
+        //put this parameter for test payments
         params.put("sandbox", "1");
-
-        System.out.println(order.getId());
         return params;
     }
 

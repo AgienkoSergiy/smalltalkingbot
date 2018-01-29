@@ -10,6 +10,7 @@ import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.exceptions.TelegramApiException;
 import ua.com.integrity.smalltalkingbot.controller.NotificationController;
 import ua.com.integrity.smalltalkingbot.controller.OrderController;
+import ua.com.integrity.smalltalkingbot.controller.UserController;
 import ua.com.integrity.smalltalkingbot.message.MessageBuilder;
 import ua.com.integrity.smalltalkingbot.model.Product;
 import ua.com.integrity.smalltalkingbot.controller.ProductController;
@@ -25,18 +26,19 @@ public class SmallTalkingBot extends TelegramLongPollingBot {
     private ProductController productController;
     private OrderController orderController;
     private NotificationController notificationController;
+    private UserController userController;
 
     public SmallTalkingBot() {
         this.productController = new ProductController(this);
         this.orderController = new OrderController(this);
         this.notificationController = new NotificationController(this);
+        this.userController = new UserController(this);
         DBUtil.getInstance();
     }
 
     public void onUpdateReceived(Update update) {
         long chatId = update.getMessage().getChatId();
-        System.out.println(chatId);
-        //TODO add exceptions handing
+
         if (update.hasMessage() && update.getMessage().hasText()) {
             String messageText = update.getMessage().getText();
             if (orderController.isActiveOrder(chatId)){
@@ -60,6 +62,8 @@ public class SmallTalkingBot extends TelegramLongPollingBot {
                             " або натисніть на кнопку:",chatId, replyKeyboardMarkup);
                 }
             } else if (messageText.equals("/start")) {
+                if(!userController.userExists(chatId))
+                    userController.addUser(chatId);
                 sendStartMessage(chatId);
 
             }else if(messageText.length() == 5 && CommonUtils.isValidProductId(messageText)){
@@ -98,29 +102,6 @@ public class SmallTalkingBot extends TelegramLongPollingBot {
             productController.releaseCurrentProduct(chatId);
             sendMisunderstandingMessage(chatId);
         }
-        //That is for getting photo id
-        /*else if (update.hasMessage() && update.getMessage().hasPhoto()) {
-
-            List<PhotoSize> photos = update.getMessage().getPhoto();
-            String photoId = photos.stream().max(Comparator.comparing(PhotoSize::getFileSize))
-                    .orElse(null).getFileId();
-            int photoWidth = photos.stream().max(Comparator.comparing(PhotoSize::getFileSize))
-                    .orElse(null).getWidth();
-            // Know photo height
-            int photoHeight = photos.stream().max(Comparator.comparing(PhotoSize::getFileSize))
-                    .orElse(null).getHeight();
-            // Set photo caption
-            String caption = "file_id: " + photoId + "\nwidth: " + Integer.toString(photoWidth) + "\nheight: " + Integer.toString(photoHeight);
-            SendPhoto msg = new SendPhoto()
-                    .setChatId(chatId)
-                    .setPhoto(photoId)
-                    .setCaption(caption);
-            try {
-                sendPhoto(msg);
-            } catch (TelegramApiException e) {
-                e.printStackTrace();
-            }
-        }*/
     }
 
 
