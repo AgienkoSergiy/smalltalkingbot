@@ -1,4 +1,4 @@
-package ua.com.integrity.smalltalkingbot.utils;
+package ua.com.integrity.smalltalkingbot.util;
 
 import ua.com.integrity.smalltalkingbot.repository.ProductRepository;
 

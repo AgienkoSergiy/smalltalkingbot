@@ -1,38 +1,56 @@
 package ua.com.integrity.smalltalkingbot.message;
 
-import org.telegram.telegrambots.api.methods.send.SendInvoice;
 import org.telegram.telegrambots.api.objects.replykeyboard.ReplyKeyboardMarkup;
-import org.telegram.telegrambots.api.objects.replykeyboard.ReplyKeyboardRemove;
 import org.telegram.telegrambots.api.objects.replykeyboard.buttons.KeyboardButton;
 import org.telegram.telegrambots.api.objects.replykeyboard.buttons.KeyboardRow;
 import ua.com.integrity.smalltalkingbot.model.Product;
 import ua.com.integrity.smalltalkingbot.repository.ProductRepository;
+import ua.com.integrity.smalltalkingbot.util.CommonUtils;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class MessageBuilder {
 
 
-    public static String buildMenuMessage(){
+    public static String buildMenuMessage(Collection <Product> products){
         StringBuffer textMessage = new StringBuffer();
 
         for (Product product:
-                ProductRepository.getInstance().getProducts().values()) {
+                products) {
             textMessage = textMessage.append(product.getName())
-                    .append("(натисни тут -> /").append(product.getId()).append(") - ")
+                    .append("(натисни тут \u27A1 /").append(product.getId()).append(") - ")
                     .append(product.getPrice().intValue()).append(" грн\n\n");
         }
 
         return textMessage.toString();
     }
 
-    public static String getProductDescription(Integer productId){
-        if (!ProductRepository.getInstance().getProducts().containsKey(productId)){
-            return null;
-        }
-        return ProductRepository.getInstance().getProducts().get(productId).getFullDescription();
+    public static String getTimeoutMessage(){
+        return "Дякуємо, що звернулися до нашого сервісу.\n" +
+                "Всього найкращого.";
     }
+
+    public static String getAcceptedOrderMessage(){
+        return "Ваше замовлення прийняте, зачекайте будь ласка.";
+    }
+
+    public static String getProductInfo(String messageProductId){
+        Integer productId = CommonUtils.extractProductId(messageProductId);
+        if (!ProductRepository.getInstance().getProducts().containsKey(productId)){
+            return "Продукту з таким ID не знайдено :(";
+        }
+        return ProductRepository.getInstance().getProducts().get(productId).getDetails();
+    }
+
+    public static String getProductDetails(Integer productId){
+        if (!ProductRepository.getInstance().getProducts().containsKey(productId)){
+            return "Продукту з таким ID не знайдено :(";
+        }
+        return ProductRepository.getInstance().getProducts().get(productId).getDetails();
+    }
+
 
     //TODO from configs
     public static String getGastroPrognosis(){
@@ -47,12 +65,12 @@ public class MessageBuilder {
 
     public static ReplyKeyboardMarkup showButtonText(String buttonText){
         ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
-
         List<KeyboardRow> keyboard = new ArrayList<>();
-
         KeyboardRow row = new KeyboardRow();
+
         row.add(buttonText);
         keyboard.add(row);
+
         keyboardMarkup.setKeyboard(keyboard);
         keyboardMarkup.setResizeKeyboard(true);
 
@@ -61,15 +79,14 @@ public class MessageBuilder {
 
     public static ReplyKeyboardMarkup showPhoneButton(){
         ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
-
         List<KeyboardRow> keyboard = new ArrayList<>();
-
         KeyboardRow row = new KeyboardRow();
         KeyboardButton keyboardButton = new KeyboardButton();
 
         keyboardButton.setText("\u260E Надати свій номер телефону").setRequestContact(true);
         row.add(keyboardButton);
         keyboard.add(row);
+
         keyboardMarkup.setKeyboard(keyboard);
         keyboardMarkup.setResizeKeyboard(true);
 
@@ -82,14 +99,19 @@ public class MessageBuilder {
         keyboardMarkup.getKeyboard().add(row);
     }
 
+    public static void addButton(ReplyKeyboardMarkup keyboardMarkup, Integer rowNumber, String buttonText){
+        KeyboardRow row = keyboardMarkup.getKeyboard().get(rowNumber);
+        row.add(buttonText);
+    }
+
     public static ReplyKeyboardMarkup showOneTimeButton(String buttonText){
         ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
-        // Create the keyboard (list of keyboard rows)
         List<KeyboardRow> keyboard = new ArrayList<>();
-        // Create a keyboard row
         KeyboardRow row = new KeyboardRow();
+
         row.add(buttonText);
         keyboard.add(row);
+
         keyboardMarkup.setKeyboard(keyboard);
         keyboardMarkup.setResizeKeyboard(true);
         keyboardMarkup.setOneTimeKeyboard(true);

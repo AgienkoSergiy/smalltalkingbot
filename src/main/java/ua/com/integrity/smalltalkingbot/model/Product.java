@@ -6,7 +6,7 @@ public class Product {
     private String name;
     private Double price;
     private String category;
-    private String description;
+    private String ingredients;
     private Double protein;
     private Double fat;
     private Double carbohydrate;
@@ -14,12 +14,12 @@ public class Product {
     private Integer weight;
     private String picId;
 
-    public Product(Integer id, String name, Double price, String category, String description, Double protein, Double fat, Double carbohydrate, Double caloricity, Integer weight, String picId) {
+    public Product(Integer id, String name, Double price, String category, String ingredients, Double protein, Double fat, Double carbohydrate, Double caloricity, Integer weight, String picId) {
         this.id = id;
         this.name = name;
         this.price = price;
         this.category = category;
-        this.description = description;
+        this.ingredients = ingredients;
         this.protein = protein;
         this.fat = fat;
         this.carbohydrate = carbohydrate;
@@ -52,8 +52,8 @@ public class Product {
         this.price = price;
     }
 
-    public String getDescription() {
-        return description;
+    public String getIngredients() {
+        return ingredients;
     }
 
     public String getCategory() {
@@ -64,8 +64,8 @@ public class Product {
         this.category = category;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setIngredients(String ingredients) {
+        this.ingredients = ingredients;
     }
 
     public Double getProtein() {
@@ -116,10 +116,10 @@ public class Product {
         this.picId = picId;
     }
 
-    public String getFullDescription() {
-        return  "Ціна: " + price.intValue() + " грн\n" +
-                "Категорія: " + category + "\n" +
-                "Опис: " + description + "\n\n" +
+
+    public String getDetails() {
+        return  "Категорія: " + category + "\n" +
+                "Інгредієнти: " + ingredients + "\n\n" +
                 "Білки: " + protein + " г\n" +
                 "Жири: " + fat + " г\n" +
                 "Вуглеводи: " + carbohydrate + " г\n" +
