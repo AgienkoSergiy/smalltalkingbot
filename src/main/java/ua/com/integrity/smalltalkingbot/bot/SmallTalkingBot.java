@@ -14,11 +14,9 @@ import ua.com.integrity.smalltalkingbot.controller.UserController;
 import ua.com.integrity.smalltalkingbot.message.MessageBuilder;
 import ua.com.integrity.smalltalkingbot.model.Product;
 import ua.com.integrity.smalltalkingbot.controller.ProductController;
-import ua.com.integrity.smalltalkingbot.model.Order;
 import ua.com.integrity.smalltalkingbot.repository.ProductRepository;
 import ua.com.integrity.smalltalkingbot.util.CommonUtils;
 import ua.com.integrity.smalltalkingbot.util.DBUtil;
-
 import java.util.Collection;
 
 public class SmallTalkingBot extends TelegramLongPollingBot {
@@ -36,57 +34,38 @@ public class SmallTalkingBot extends TelegramLongPollingBot {
         DBUtil.getInstance();
     }
 
+
     public void onUpdateReceived(Update update) {
         long chatId = update.getMessage().getChatId();
 
         if (update.hasMessage() && update.getMessage().hasText()) {
             String messageText = update.getMessage().getText();
+
             if (orderController.isActiveOrder(chatId)){
                 if (CommonUtils.isValidPhoneNumber(messageText)) {
-                    sendDefaultMessage(chatId, MessageBuilder.getAcceptedOrderMessage());
-                    orderController.processOrder(chatId,orderController.getActiveOrder(chatId),messageText);
-                    productController.releaseCurrentProduct(chatId);
-                    orderController.releaseOrder(chatId);
-
+                    processOrder(chatId, messageText);
                 }else if ("\u274C Відмінити".equals(messageText)){
-                    orderController.releaseOrder(chatId);
-                    productController.releaseCurrentProduct(chatId);
-                    ReplyKeyboardMarkup replyKeyboardMarkup = MessageBuilder.showButtonText("\uD83C\uDF72 Меню");
-                    sendTextMessage( "Оплату відмінено.\n", chatId, replyKeyboardMarkup);
-
+                    cancelOrder(chatId);
                 }else{
-                    ReplyKeyboardMarkup replyKeyboardMarkup = MessageBuilder.showPhoneButton();
-                    MessageBuilder.addRowButton(replyKeyboardMarkup,"\u274C Відмінити");
-                    sendTextMessage("Помилка введення.\n" +
-                            "Введіть уважно свій номер телефону в форматі +380ХХХХХХХХХ," +
-                            " або натисніть на кнопку:",chatId, replyKeyboardMarkup);
+                    sendWrongNumberMessage(chatId);
                 }
             } else if (messageText.equals("/start")) {
-                if(!userController.userExists(chatId))
+                if(!userController.userExists(chatId)) {
                     userController.addUser(chatId);
+                }
                 sendStartMessage(chatId);
 
             }else if(messageText.length() == 5 && CommonUtils.isValidProductId(messageText)){
-                Integer productId = CommonUtils.extractProductId(messageText);
-                Product product = productController.holdCurrentProduct(chatId,productId);
-                sendProductInfoMessage(product, chatId);
+                sendProductInfoMessage(chatId, messageText);
 
             }else if (messageText.matches("/menu|Меню|меню|Menu|menu|\uD83C\uDF72 Меню")) {
-                productController.releaseCurrentProduct(chatId);
-                Collection<Product> products = ProductRepository.getInstance().getProducts().values();
-                sendTextMessage( MessageBuilder.buildMenuMessage(products), chatId, new ReplyKeyboardRemove());
+                sendMenuMessage(chatId);
 
             }else if(messageText.equals("\uD83D\uDCB3 Оплатити")){
-                orderController.createOrder(chatId, productController.getCurrentProduct(chatId));
-                ReplyKeyboardMarkup replyKeyboardMarkup = MessageBuilder.showPhoneButton();
-                MessageBuilder.addRowButton(replyKeyboardMarkup,"\u274C Відмінити");
-                sendTextMessage("Введіть свій номер телефону в форматі +380ХХХХХХХХХ, " +
-                        "або натисніть на кнопку 'Надати свій номер телефону':",chatId, replyKeyboardMarkup);
+                sendPaymentMessage(chatId);
 
             }else if (messageText.matches("/details|\uD83D\uDCDD Деталі страви")&& productController.hasCurrentProduct(chatId)) {
-                ReplyKeyboardMarkup replyKeyboardMarkup = MessageBuilder.showButtonText("\uD83D\uDCB3 Оплатити");
-                MessageBuilder.addRowButton(replyKeyboardMarkup, "\uD83C\uDF72 Меню");
-                sendTextMessage( productController.getCurrentProduct(chatId).getDetails(), chatId, replyKeyboardMarkup);
+                sendProductDetailsMessage(chatId);
 
             }else{
                 productController.releaseCurrentProduct(chatId);
@@ -95,9 +74,8 @@ public class SmallTalkingBot extends TelegramLongPollingBot {
 
         }else if(update.hasMessage() && update.getMessage().getContact()!=null && orderController.isActiveOrder(chatId)){
             String phoneNumber = update.getMessage().getContact().getPhoneNumber();
-            Order order = orderController.getActiveOrder(chatId);
-            sendDefaultMessage(chatId, MessageBuilder.getAcceptedOrderMessage());
-            orderController.processOrder(chatId, order, phoneNumber);
+            processOrder(chatId, phoneNumber);
+
         }else{
             productController.releaseCurrentProduct(chatId);
             sendMisunderstandingMessage(chatId);
@@ -128,6 +106,18 @@ public class SmallTalkingBot extends TelegramLongPollingBot {
         }
     }
 
+    private void sendStartMessage(long chatId){
+        sendTextMessage("Ласкаво просимо до SmallTalking :)",chatId);
+        sendTextMessage(MessageBuilder.getGastroPrognosis(),chatId, MessageBuilder.showButtonText("\uD83C\uDF72 Меню"));
+    }
+
+    private void sendMenuMessage(long chatId){
+        productController.releaseCurrentProduct(chatId);
+        Collection<Product> products = ProductRepository.getInstance().getProducts().values();
+        sendTextMessage( MessageBuilder.buildMenuMessage(products), chatId, new ReplyKeyboardRemove());
+    }
+
+
     private void sendProductPhotoMessage(Product product, long chatId){
         String caption = product.getName() + " - " + product.getPrice().intValue() + " грн";
         SendPhoto msg = new SendPhoto()
@@ -141,7 +131,9 @@ public class SmallTalkingBot extends TelegramLongPollingBot {
         }
     }
 
-    private void sendProductInfoMessage(Product product, long chatId){
+    private void sendProductInfoMessage(long chatId, String messageText){
+        Integer productId = CommonUtils.extractProductId(messageText);
+        Product product = productController.holdCurrentProduct(chatId,productId);
         ReplyKeyboardMarkup replyKeyboardMarkup = MessageBuilder.showButtonText("\uD83D\uDCB3 Оплатити");
         MessageBuilder.addButton(replyKeyboardMarkup,0,"\uD83D\uDCDD Деталі страви");
         MessageBuilder.addRowButton(replyKeyboardMarkup, "\uD83C\uDF72 Меню");
@@ -154,16 +146,47 @@ public class SmallTalkingBot extends TelegramLongPollingBot {
         sendTextMessage(text,chatId, MessageBuilder.showButtonText("\uD83C\uDF72 Меню"));
     }
 
-    private void sendStartMessage(long chatId){
-        sendTextMessage("Ласкаво просимо до SmallTalking :)",chatId);
-        sendTextMessage(MessageBuilder.getGastroPrognosis(),chatId, MessageBuilder.showButtonText("\uD83C\uDF72 Меню"));
-    }
-
-
     private void sendMisunderstandingMessage(long chatId){
         Collection<Product> products = ProductRepository.getInstance().getProducts().values();
         sendTextMessage("Не зрозумів?! Мабуть, хтось дуже голодний.", chatId);
         sendTextMessage("Сьогодні ми пропонуємо:\n" + MessageBuilder.buildMenuMessage(products),chatId, new ReplyKeyboardRemove());
+    }
+
+    private void sendPaymentMessage(long chatId){
+        orderController.createOrder(chatId, productController.getCurrentProduct(chatId));
+        productController.releaseCurrentProduct(chatId);
+        ReplyKeyboardMarkup replyKeyboardMarkup = MessageBuilder.showPhoneButton();
+        MessageBuilder.addRowButton(replyKeyboardMarkup,"\u274C Відмінити");
+        sendTextMessage("Введіть свій номер телефону в форматі +380ХХХХХХХХХ, " +
+                "або натисніть на кнопку 'Надати свій номер телефону':",chatId, replyKeyboardMarkup);
+    }
+
+    private void processOrder(long chatId, String phoneNumber){
+        sendDefaultMessage(chatId, MessageBuilder.getAcceptedOrderMessage());
+        orderController.processOrder(chatId,orderController.getActiveOrder(chatId),phoneNumber);
+        productController.releaseCurrentProduct(chatId);
+        orderController.releaseOrder(chatId);
+    }
+
+    private void cancelOrder(long chatId){
+        orderController.releaseOrder(chatId);
+        productController.releaseCurrentProduct(chatId);
+        ReplyKeyboardMarkup replyKeyboardMarkup = MessageBuilder.showButtonText("\uD83C\uDF72 Меню");
+        sendTextMessage( "Оплату відмінено.\n", chatId, replyKeyboardMarkup);
+    }
+
+    private void sendWrongNumberMessage(long chatId){
+        ReplyKeyboardMarkup replyKeyboardMarkup = MessageBuilder.showPhoneButton();
+        MessageBuilder.addRowButton(replyKeyboardMarkup,"\u274C Відмінити");
+        sendTextMessage("Помилка введення.\n" +
+                "Введіть уважно свій номер телефону в форматі +380ХХХХХХХХХ," +
+                " або натисніть на кнопку:",chatId, replyKeyboardMarkup);
+    }
+
+    private void sendProductDetailsMessage(long chatId){
+        ReplyKeyboardMarkup replyKeyboardMarkup = MessageBuilder.showButtonText("\uD83D\uDCB3 Оплатити");
+        MessageBuilder.addRowButton(replyKeyboardMarkup, "\uD83C\uDF72 Меню");
+        sendTextMessage( productController.getCurrentProduct(chatId).getDetails(), chatId, replyKeyboardMarkup);
     }
 
 

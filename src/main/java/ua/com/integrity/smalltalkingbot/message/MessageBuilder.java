@@ -36,23 +36,6 @@ public class MessageBuilder {
         return "Ваше замовлення прийняте, зачекайте будь ласка.";
     }
 
-    public static String getProductInfo(String messageProductId){
-        Integer productId = CommonUtils.extractProductId(messageProductId);
-        if (!ProductRepository.getInstance().getProducts().containsKey(productId)){
-            return "Продукту з таким ID не знайдено :(";
-        }
-        return ProductRepository.getInstance().getProducts().get(productId).getDetails();
-    }
-
-    public static String getProductDetails(Integer productId){
-        if (!ProductRepository.getInstance().getProducts().containsKey(productId)){
-            return "Продукту з таким ID не знайдено :(";
-        }
-        return ProductRepository.getInstance().getProducts().get(productId).getDetails();
-    }
-
-
-    //TODO from configs
     public static String getGastroPrognosis(){
         return "Гастропрогноз на сьогодні:  у нашому кафе-магазині, як завжди, свіжа та смачна їжа. " +
                 "В першій половині дня зазирніть на верхні полиці нашого холодильнику - " +
@@ -102,21 +85,6 @@ public class MessageBuilder {
     public static void addButton(ReplyKeyboardMarkup keyboardMarkup, Integer rowNumber, String buttonText){
         KeyboardRow row = keyboardMarkup.getKeyboard().get(rowNumber);
         row.add(buttonText);
-    }
-
-    public static ReplyKeyboardMarkup showOneTimeButton(String buttonText){
-        ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
-        List<KeyboardRow> keyboard = new ArrayList<>();
-        KeyboardRow row = new KeyboardRow();
-
-        row.add(buttonText);
-        keyboard.add(row);
-
-        keyboardMarkup.setKeyboard(keyboard);
-        keyboardMarkup.setResizeKeyboard(true);
-        keyboardMarkup.setOneTimeKeyboard(true);
-
-        return keyboardMarkup;
     }
 
 }
