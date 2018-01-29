@@ -6,15 +6,16 @@ import ua.com.integrity.smalltalkingbot.message.MessageBuilder;
 import ua.com.integrity.smalltalkingbot.model.Product;
 import ua.com.integrity.smalltalkingbot.model.Order;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
+import java.util.Properties;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class OrderController {
-    //TODO to configs
-    private final String PUBLIC_KEY = "i52327802934";
-    private final String PRIVATE_KEY = "UcuUoBuTYbLvbXUkXm7JFcPfzvRIF2u6pjaJ4G1I";
+    private static final String PROPERTY_FILE_PATH = "application.properties";
 
     private SmallTalkingBot smallTalkingBot;
     private HashMap<Long, Order> activeOrders;
@@ -68,7 +69,7 @@ public class OrderController {
     }
 
     public boolean isActiveOrder(long chatId){
-        return activeTimeoutTasks.entrySet().stream()
+        return activeOrders.entrySet().stream()
                 .anyMatch(ent -> ent.getKey() == chatId);
     }
 
@@ -82,8 +83,10 @@ public class OrderController {
     }
 
     private String processLiqPayOrder(String phoneNumber, Order order){
+        Properties properties = getProperties(PROPERTY_FILE_PATH);
 
-        LiqPay liqpay = new LiqPay( PUBLIC_KEY, PRIVATE_KEY);
+        LiqPay liqpay = new LiqPay(properties.getProperty("store.publickey"),
+                                    properties.getProperty("store.privatekey"));
         try {
             HashMap<String, Object> res = (HashMap<String, Object>)liqpay.api("request", getNewOrderParams(order, phoneNumber));
 
@@ -99,6 +102,17 @@ public class OrderController {
             e.printStackTrace();
         }
         return "Сталася прикра помилка :(";
+    }
+
+    private Properties getProperties(String filePath){
+        try (InputStream inputStream =
+                     getClass().getClassLoader().getResourceAsStream(PROPERTY_FILE_PATH)) {
+            Properties properties = new Properties();
+            properties.load(inputStream);
+            return properties;
+        } catch (IOException e) {
+            throw new RuntimeException("Property file reading error ", e);
+        }
     }
 
 

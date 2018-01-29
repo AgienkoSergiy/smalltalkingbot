@@ -13,7 +13,7 @@ import static ua.com.integrity.smalltalkingbot.util.DBUtil.getConnection;
 public class ProductRepository {
 
     private HashMap<Integer,Product> products;
-   private static final String GET_ALL_QUERY = "SELECT * FROM SMALLTALKINGDB.PUBLIC.PRODUCT";
+    private static final String GET_ALL_QUERY = "SELECT * FROM SMALLTALKINGDB.PUBLIC.PRODUCT";
 
     private ProductRepository(){
         products = new HashMap<>();
