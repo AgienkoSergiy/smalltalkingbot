@@ -1,14 +1,14 @@
 package ua.com.integrity.smalltalkingbot.controller;
 
-import ua.com.integrity.smalltalkingbot.bot.SmallTalkingBot;
 import ua.com.integrity.smalltalkingbot.model.User;
 import ua.com.integrity.smalltalkingbot.repository.UserRepository;
 
-public class UserController {
-    private SmallTalkingBot smallTalkingBot;
+import java.util.List;
 
-    public UserController(SmallTalkingBot smallTalkingBot) {
-        this.smallTalkingBot = smallTalkingBot;
+public class UserController {
+
+
+    public UserController() {
     }
 
     public void addUser(long chatId){
@@ -17,10 +17,17 @@ public class UserController {
 
     public User getUserByChatId(long chatId){
         return UserRepository.getInstance().getUserByChatId(chatId);
-
     }
 
     public Boolean userExists(long chatId){
         return UserRepository.getInstance().userExists(chatId);
+    }
+
+    public List<User> getAllUsers(){
+        return UserRepository.getInstance().getAllUsers();
+    }
+
+    public List<Long> getSubscribedChats(){
+        return UserRepository.getInstance().getSubscribedChats();
     }
 }

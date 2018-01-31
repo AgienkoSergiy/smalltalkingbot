@@ -119,7 +119,7 @@ public class OrderController {
     private HashMap<String, String> getNewOrderParams(Order order, String phoneNumber){
         HashMap<String, String> params = new HashMap<>();
         params.put("currency", "UAH");
-        params.put("amount", order.getProduct().getPrice().toString());
+        params.put("amount", "1"/*order.getProduct().getPrice().toString()*/);
         params.put("description", "Small Talking food refrigerator");
         params.put("channel_type", "telegram");
         params.put("version", "3");

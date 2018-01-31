@@ -30,7 +30,7 @@ public class SmallTalkingBot extends TelegramLongPollingBot {
         this.productController = new ProductController(this);
         this.orderController = new OrderController(this);
         this.notificationController = new NotificationController(this);
-        this.userController = new UserController(this);
+        this.userController = new UserController();
         DBUtil.getInstance();
     }
 
@@ -62,7 +62,7 @@ public class SmallTalkingBot extends TelegramLongPollingBot {
                 sendMenuMessage(chatId);
 
             }else if(messageText.equals("\uD83D\uDCB3 Оплатити")){
-                sendPaymentMessage(chatId);
+                sendPhoneNumberRequestMessage(chatId);
 
             }else if (messageText.matches("/details|\uD83D\uDCDD Деталі страви")&& productController.hasCurrentProduct(chatId)) {
                 sendProductDetailsMessage(chatId);
@@ -152,7 +152,7 @@ public class SmallTalkingBot extends TelegramLongPollingBot {
         sendTextMessage("Сьогодні ми пропонуємо:\n" + MessageBuilder.buildMenuMessage(products),chatId, new ReplyKeyboardRemove());
     }
 
-    private void sendPaymentMessage(long chatId){
+    private void sendPhoneNumberRequestMessage(long chatId){
         orderController.createOrder(chatId, productController.getCurrentProduct(chatId));
         productController.releaseCurrentProduct(chatId);
         ReplyKeyboardMarkup replyKeyboardMarkup = MessageBuilder.showPhoneButton();
@@ -188,7 +188,6 @@ public class SmallTalkingBot extends TelegramLongPollingBot {
         MessageBuilder.addRowButton(replyKeyboardMarkup, "\uD83C\uDF72 Меню");
         sendTextMessage( productController.getCurrentProduct(chatId).getDetails(), chatId, replyKeyboardMarkup);
     }
-
 
     public String getBotUsername() {
         return "SmallTalkingBot";

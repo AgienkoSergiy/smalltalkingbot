@@ -2,6 +2,7 @@ package ua.com.integrity.smalltalkingbot.controller;
 
 import ua.com.integrity.smalltalkingbot.bot.SmallTalkingBot;
 import ua.com.integrity.smalltalkingbot.message.MessageBuilder;
+import ua.com.integrity.smalltalkingbot.repository.UserRepository;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -23,6 +24,10 @@ public class NotificationController {
         subscribedChats = new HashSet<>();
         subscribedChats.add(410245108L);
         sendDailyNotification(11,30);
+    }
+
+    private void getSubsribedChats(){
+        //subscribedChats = UserRepository.getInstance().getSubscribedChats()
     }
 
     public void sendDailyNotification(int atHour, int atMinute){
