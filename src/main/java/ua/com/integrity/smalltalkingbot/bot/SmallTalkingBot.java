@@ -2,6 +2,7 @@ package ua.com.integrity.smalltalkingbot.bot;
 
 import org.telegram.telegrambots.api.methods.send.SendMessage;
 import org.telegram.telegrambots.api.methods.send.SendPhoto;
+import org.telegram.telegrambots.api.objects.PhotoSize;
 import org.telegram.telegrambots.api.objects.Update;
 import org.telegram.telegrambots.api.objects.replykeyboard.ReplyKeyboard;
 import org.telegram.telegrambots.api.objects.replykeyboard.ReplyKeyboardMarkup;
@@ -18,6 +19,8 @@ import ua.com.integrity.smalltalkingbot.repository.ProductRepository;
 import ua.com.integrity.smalltalkingbot.util.CommonUtils;
 import ua.com.integrity.smalltalkingbot.util.DBUtil;
 import java.util.Collection;
+import java.util.Comparator;
+import java.util.List;
 
 public class SmallTalkingBot extends TelegramLongPollingBot {
 
@@ -107,8 +110,8 @@ public class SmallTalkingBot extends TelegramLongPollingBot {
     }
 
     private void sendStartMessage(long chatId){
-        sendTextMessage("Ласкаво просимо до SmallTalking :)",chatId);
-        sendTextMessage(MessageBuilder.getGastroPrognosis(),chatId, MessageBuilder.showButtonText("\uD83C\uDF72 Меню"));
+        sendTextMessage("Ласкаво просимо до Happy Cherry :)",chatId, MessageBuilder.showButtonText("\uD83C\uDF72 Меню"));
+        //sendTextMessage(MessageBuilder.getGastroPrognosis(),chatId, MessageBuilder.showButtonText("\uD83C\uDF72 Меню"));
     }
 
     private void sendMenuMessage(long chatId){

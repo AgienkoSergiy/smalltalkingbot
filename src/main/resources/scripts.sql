@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS PRODUCT;
 CREATE TABLE PRODUCT
 (
     ID INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
@@ -35,8 +36,8 @@ CREATE UNIQUE INDEX ORDER_ID_uindex ON "ORDER" (ID);
 
 
 
-INSERT INTO PUBLIC.PRODUCT (ID, NAME, PRICE, CATEGORY, INGREDIENTS, PROTEIN, FAT, CARBOHYDRATE, CALORICITY, WEIGHT, PIC_ID) VALUES (1001, 'Суп східний з броколі', 66, 'перші страви', 'броколі, горох, сочевиця, спеції в асортименті, вершки 26 %, сіль, зелень в асортименті (кріп, петрушка, цибуля зел)', 55.5, 28.4, 23.1, 215.17, 250, 'AgADAgADkagxG5slUUvhRjYpQPzQ0M_9Mg4ABEBBe4UMjXen7T0DAAEC');
-INSERT INTO PUBLIC.PRODUCT (ID, NAME, PRICE, CATEGORY, INGREDIENTS, PROTEIN, FAT, CARBOHYDRATE, CALORICITY, WEIGHT, PIC_ID) VALUES (2001, 'Філе білої риби на томатній подушці', 87, 'основні страви', 'філе мерлузи, морква, кабачок, вершки, томатний соус, кріп, лимон', 100.5, 45.4, 54.1, 287.17, 350, 'AgADAgADp6gxG5slUUvM5oOc3JRURvIDnA4ABDeF5KJuAbZVh5wAAgI');
-INSERT INTO PUBLIC.PRODUCT (ID, NAME, PRICE, CATEGORY, INGREDIENTS, PROTEIN, FAT, CARBOHYDRATE, CALORICITY, WEIGHT, PIC_ID) VALUES (3001, 'Кіш лорен', 90, 'основні страви', 'пісочне тісто (пшеничне борошно, вершкове масло, яйця, сіль), твердий сир, вершки, шинка, бекон, цибуля - порей', 90.5, 99.4, 124.1, 341.17, 200, 'AgADAgADqKgxG5slUUsi9s8MvpCZoqn_Mg4ABA3XiuwQ4uKLgjsDAAEC');
-INSERT INTO PUBLIC.PRODUCT (ID, NAME, PRICE, CATEGORY, INGREDIENTS, PROTEIN, FAT, CARBOHYDRATE, CALORICITY, WEIGHT, PIC_ID) VALUES (4001, 'Наполеон десерт', 42, 'десерти', 'листкове тісто, білий шоколад, яєчний жовток, цукор, вершкове масло', 71.2, 153.4, 90.1, 247.8, 150, 'AgADAgADqagxG5slUUtZG8_TiTrcmmwGnA4ABIxRYBCzz9ISk5cAAgI');
+INSERT INTO PUBLIC.PRODUCT (ID, NAME, PRICE, CATEGORY, INGREDIENTS, PROTEIN, FAT, CARBOHYDRATE, CALORICITY, WEIGHT, PIC_ID) VALUES (1001, 'Вишневий пиріг', 66, 'десерти', 'броколі, горох, сочевиця, спеції в асортименті, вершки 26 %, сіль, зелень в асортименті (кріп, петрушка, цибуля зел)', 5.6, 17.9, 34.1, 265, 200, 'AgADAgADLKkxG3sWAUmqBW55RdquGXoerQ4ABD45RVx71VyifYQCAAEC');
+INSERT INTO PUBLIC.PRODUCT (ID, NAME, PRICE, CATEGORY, INGREDIENTS, PROTEIN, FAT, CARBOHYDRATE, CALORICITY, WEIGHT, PIC_ID) VALUES (2001, 'Качина грудка з вишневим соусом', 87, 'основні страви', 'філе мерлузи, морква, кабачок, вершки, томатний соус, кріп, лимон', 19, 6, 54.1, 84, 250, 'AgADAgADoqgxG6NrCUk7FflFjOO1HcoInA4ABGXR7q7CI7qfR2kFAAEC');
+INSERT INTO PUBLIC.PRODUCT (ID, NAME, PRICE, CATEGORY, INGREDIENTS, PROTEIN, FAT, CARBOHYDRATE, CALORICITY, WEIGHT, PIC_ID) VALUES (3001, 'Вишневий сорбет з фруктами', 90, 'десерти', 'пісочне тісто (пшеничне борошно, вершкове масло, яйця, сіль), твердий сир, вершки, шинка, бекон, цибуля - порей', 1.1, 0.2, 14.4, 100, 200, 'AgADAgADpKgxG6NrCUnYT84uhhWziBK5qw4ABAO3t8LDQ-P2OYsCAAEC');
+INSERT INTO PUBLIC.PRODUCT (ID, NAME, PRICE, CATEGORY, INGREDIENTS, PROTEIN, FAT, CARBOHYDRATE, CALORICITY, WEIGHT, PIC_ID) VALUES (4001, 'Вишнево-томатна сальса', 42, 'основні страви', 'листкове тісто, білий шоколад, яєчний жовток, цукор, вершкове масло', 1.5, 0.1, 7, 36, 150, 'AgADAgADo6gxG6NrCUmm5ScHuAMIqsG0tw4ABGeH07U-JdmdoAIAAgI');
 
